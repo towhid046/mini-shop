@@ -1,13 +1,17 @@
+import { useEffect, useState} from "react";
 import useCartInfo from "../../../hooks/useCartInfo";
 import { FaTimes } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import axios from "axios";
 import { Product } from "../../../lib/types";
-import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
+import Button from "../../shared/Button/Button";
+import CheckoutModal from "./CheckoutModal";
 
 const Checkout = () => {
   const [cartProducts, setCartProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
 
   const {
     setIsToggle,
@@ -17,7 +21,6 @@ const Checkout = () => {
     decrementProduct,
   } = useCartInfo();
 
-  // Load full product details from DB using cartItems ids
   const loadCartProducts = async (): Promise<void> => {
     try {
       const ids = cartItems.map((item) => item.id);
@@ -45,6 +48,10 @@ const Checkout = () => {
     return total + item.price * qty;
   }, 0);
 
+  const handleCheckoutClick = () => {
+    setShowModal(true);
+  };
+
   return (
     <div className="fixed top-0 w-full min-h-screen z-50">
       <div className="w-full md:grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
@@ -54,7 +61,6 @@ const Checkout = () => {
         ></div>
 
         <ul className="min-h-screen bg-base-100 p-5 col-span-1">
-          {/* Header */}
           <div className="flex justify-between items-center mb-7">
             <h2 className="text-2xl font-semibold text-gray-600">Cart</h2>
             <button onClick={() => setIsToggle(false)}>
@@ -62,20 +68,17 @@ const Checkout = () => {
             </button>
           </div>
 
-          {/* Loading Spinner */}
           {isLoading && (
             <div className="flex justify-center items-center min-h-[80vh]">
               <span className="loading loading-spinner loading-sm"></span>
             </div>
           )}
 
-          {/* Cart Items */}
           <div className="space-y-4">
             {cartProducts.map((item) => {
               const quantity = getQuantity(item._id);
               return (
                 <li key={item._id} className="flex justify-between items-center">
-                  {/* Left: Image + Info */}
                   <div className="flex items-center gap-2">
                     <figure>
                       <img
@@ -86,7 +89,6 @@ const Checkout = () => {
                     </figure>
                     <div>
                       <p className="text-md text-gray-600">{item?.name}</p>
-                      {/* Quantity Controls */}
                       <div className="flex items-center gap-2 text-primary-color mt-1">
                         <button onClick={() => decrementProduct(item._id)}>
                           <IoRemoveCircleOutline className="text-xl hover:text-red-500 transition" />
@@ -99,7 +101,6 @@ const Checkout = () => {
                     </div>
                   </div>
 
-                  {/* Right: Price + Remove */}
                   <div className="flex items-center gap-2">
                     <strong>${(item.price * quantity).toFixed(2)}</strong>
                     <button
@@ -114,26 +115,35 @@ const Checkout = () => {
             })}
           </div>
 
-          {/* Empty State */}
           {!cartProducts.length && !isLoading && (
             <p className="text-center text-xl font-semibold italic flex justify-center items-center min-h-[80vh]">
               No product Added Yet!
             </p>
           )}
 
-          {/* Total Price */}
           {cartProducts.length > 0 && (
-            <div className="mt-6 border-t pt-4 text-right">
-              <h3 className="text-lg font-semibold text-gray-700">
-                Total:{" "}
-                <span className="text-primary-color">${totalPrice.toFixed(2)}</span>
-              </h3>
-            </div>
+            <>
+              <div className="mt-6 border-t pt-4 text-right">
+                <h3 className="text-lg font-semibold text-gray-700">
+                  Total: <span className="text-primary-color">${totalPrice.toFixed(2)}</span>
+                </h3>
+              </div>
+              <div className="mt-4 text-right">
+                <Button customClass="md:py-2 py-1.5 md:px-5 px-4" clickHandler={handleCheckoutClick}>
+                  Checkout
+                </Button>
+              </div>
+            </>
           )}
         </ul>
       </div>
+
+      {showModal && (
+        <CheckoutModal setShowModal={setShowModal} />
+      )}
     </div>
   );
 };
 
 export default Checkout;
+
