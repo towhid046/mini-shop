@@ -1,12 +1,13 @@
 import { FormEvent, useState } from "react";
 import useCartInfo from "../../../hooks/useCartInfo";
 import { toast } from "react-toastify";
-import Button from "../../shared/Button/Button";
+import Button from "../Button/Button";
 import { FaTimes } from "react-icons/fa";
 interface CheckoutModalProps {
     setShowModal: (show: boolean) => void;
+    totalPrice: number;
 }
-const CheckoutModal = ({setShowModal}:CheckoutModalProps) => {
+const CheckoutModal = ({setShowModal, totalPrice}:CheckoutModalProps) => {
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [address, setAddress] = useState<string>("");
@@ -36,6 +37,7 @@ const CheckoutModal = ({setShowModal}:CheckoutModalProps) => {
             >
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-semibold">Checkout</h3>
+                    <h3 className="text-xl font-semibold text-red-400">Total: ${totalPrice.toFixed(2)}</h3>
                     <button onClick={() => setShowModal(false)}>
                         <FaTimes className="text-gray-600 hover:text-red-400" />
                     </button>

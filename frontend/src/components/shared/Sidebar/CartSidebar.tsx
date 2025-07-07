@@ -4,10 +4,10 @@ import { FaTimes } from "react-icons/fa";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import axios from "axios";
 import { Product } from "../../../lib/types";
-import Button from "../../shared/Button/Button";
+import Button from "../Button/Button";
 import CheckoutModal from "./CheckoutModal";
 
-const Checkout = () => {
+const CartSidebar = () => {
   const [cartProducts, setCartProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -139,11 +139,11 @@ const Checkout = () => {
       </div>
 
       {showModal && (
-        <CheckoutModal setShowModal={setShowModal} />
+        <CheckoutModal setShowModal={setShowModal} totalPrice={totalPrice}/>
       )}
     </div>
   );
 };
 
-export default Checkout;
+export default CartSidebar;
 

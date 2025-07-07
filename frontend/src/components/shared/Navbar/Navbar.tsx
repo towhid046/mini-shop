@@ -2,7 +2,7 @@ import React from "react";
 import Cart from "./Cart/Cart";
 import useCartInfo from "../../../hooks/useCartInfo";
 import Logo from "./../Logo/Logo";
-import Checkout from "../Checkout/Checkout";
+import Checkout from "../Sidebar/CartSidebar";
 
 const Navbar: React.FC = () => {
   const { isToggle } = useCartInfo();
